@@ -1,6 +1,5 @@
---  1. Write a stored procedure named increase_value that takes one
--- integer parameter and returns the parameter value increased by 10
-CREATE OR REPLACE PROCEDURE increase_value(IN val INTEGER, OUT result INTEGER)
+-- 1. The procedure increase_value increases the given integer by 10
+CREATE OR REPLACE PROCEDURE increase_value(IN val INT, OUT result INT)
 LANGUAGE plpgsql AS
 $$
 BEGIN
@@ -8,12 +7,8 @@ BEGIN
 END;
 $$;
 
-
---  2. Create a stored procedure compare_numbers that takes two
--- integers and returns 'Greater', 'Equal', or 'Lesser' as an out
--- parameter, depending on the comparison result of these two
--- numbers
-CREATE OR REPLACE PROCEDURE compare_numbers(IN num1 INTEGER, IN num2 INTEGER, OUT result VARCHAR)
+-- 2. The procedure compare_numbers compares two numbers and returns 'Greater', 'Equal', or 'Lesser'
+CREATE OR REPLACE PROCEDURE compare_numbers(IN num1 INT, IN num2 INT, OUT result VARCHAR)
 LANGUAGE plpgsql AS
 $$
 BEGIN
@@ -27,106 +22,88 @@ BEGIN
 END;
 $$;
 
-
---  3. Write a stored procedure number_series that takes an integer n
--- and returns a series from 1 to n. Use a looping construct within
--- the procedure.
-CREATE OR REPLACE PROCEDURE number_series(IN n INTEGER)
+-- 3. The procedure number_series generates a series of numbers from 1 to n
+CREATE OR REPLACE PROCEDURE number_series(IN n INT)
 LANGUAGE plpgsql AS
 $$
 DECLARE
-    i INTEGER := 1;
+    i INT := 1;
 BEGIN
     WHILE i <= n LOOP
-        RAISE NOTICE 'Number: %', i;
+        RAISE NOTICE 'Number: %', i;  -- Outputs the current number
         i := i + 1;
     END LOOP;
 END;
 $$;
 
-
---  4. Write a stored procedure find_employee that takes an
--- employee name as a parameter and returns the employee
--- details by performing a query.
+-- 4. The procedure find_employee finds an employee by name and outputs their details
 CREATE OR REPLACE PROCEDURE find_employee(IN emp_name VARCHAR)
 LANGUAGE plpgsql AS
 $$
 BEGIN
-    
+    -- Query to get employee details
     RAISE NOTICE 'Employee Details: ';
     PERFORM * FROM employees WHERE name = emp_name;
 END;
 $$;
 
-
---  5. Develop a stored procedure list_products that returns a table
--- with product details from a given category
+-- 5. The procedure list_products returns a table with product details from a given category
 CREATE OR REPLACE PROCEDURE list_products(IN category_name VARCHAR)
 LANGUAGE plpgsql AS
 $$
 BEGIN
-    -- Запрос для получения данных о продуктах
+    -- Query to get product details from the specified category
     RAISE NOTICE 'Product Details: ';
     PERFORM * FROM products WHERE category = category_name;
 END;
 $$;
 
-
---  6. Create two stored procedures where the first procedure calls
--- the second one. For example, a procedure calculate_bonus
--- that calculates a bonus, and another procedure update_salary
--- that uses calculate_bonus to update the salary of an employee.
+-- 6. The procedure calculate_bonus calculates a bonus, and the procedure update_salary updates an employee's salary
 CREATE OR REPLACE PROCEDURE calculate_bonus(IN salary NUMERIC, OUT bonus NUMERIC)
 LANGUAGE plpgsql AS
 $$
 BEGIN
-    bonus := salary * 0.1; 
+    bonus := salary * 0.1;  -- Bonus is 10% of the salary
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE update_salary(IN emp_id INTEGER)
+CREATE OR REPLACE PROCEDURE update_salary(IN emp_id INT)
 LANGUAGE plpgsql AS
 $$
 DECLARE
     current_salary NUMERIC;
     bonus NUMERIC;
 BEGIN
-    
+    -- Get the current salary of the employee
     SELECT salary INTO current_salary FROM employees WHERE id = emp_id;
     
-    
+    -- Calculate the bonus
     CALL calculate_bonus(current_salary, bonus);
     
-    
+    -- Update the salary with the bonus
     UPDATE employees SET salary = current_salary + bonus WHERE id = emp_id;
 END;
 $$;
 
-
---  7. Create a stored procedure complex_calculation
--- that accepts multiple parameters of various types (e.g., INTEGER, VARCHAR).
--- The main block should include at least two nested subblocks.
--- Each subblock should perform a distinct operation (e.g., string manipulation and a numeric computation).
--- The main block should then combine results from these subblocks in some way.
--- Return a final result that depends on both subblocks' outputs.
-CREATE OR REPLACE PROCEDURE complex_calculation(IN num1 INTEGER, IN str1 VARCHAR, OUT result NUMERIC)
+-- 7. The procedure complex_calculation performs multiple operations (string manipulation and numeric computation) and returns the final result
+CREATE OR REPLACE PROCEDURE complex_calculation(IN num1 INT, IN str1 VARCHAR, OUT result NUMERIC)
 LANGUAGE plpgsql AS
 $$
 DECLARE
     processed_str VARCHAR;
     calculation_result NUMERIC;
 BEGIN
-    
+    -- Nested block for string manipulation
     BEGIN
         processed_str := CONCAT(str1, '_processed');
     END;
 
-    
+    -- Nested block for numeric computation
     BEGIN
-        calculation_result := num1 * 1.5;
+        calculation_result := num1 * 1.5;  -- Multiplies the number by 1.5
     END;
 
-    
-    result := calculation_result + LENGTH(processed_str);
+    -- Final result
+    result := calculation_result + LENGTH(processed_str);  -- Summing the computations
 END;
 $$;
