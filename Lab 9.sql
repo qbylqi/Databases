@@ -52,7 +52,7 @@ CREATE OR REPLACE PROCEDURE find_employee(IN emp_name VARCHAR)
 LANGUAGE plpgsql AS
 $$
 BEGIN
-    -- Запрос для получения данных сотрудника
+    
     RAISE NOTICE 'Employee Details: ';
     PERFORM * FROM employees WHERE name = emp_name;
 END;
@@ -80,7 +80,7 @@ CREATE OR REPLACE PROCEDURE calculate_bonus(IN salary NUMERIC, OUT bonus NUMERIC
 LANGUAGE plpgsql AS
 $$
 BEGIN
-    bonus := salary * 0.1; -- Бонус равен 10% от зарплаты
+    bonus := salary * 0.1; 
 END;
 $$;
 
@@ -91,13 +91,13 @@ DECLARE
     current_salary NUMERIC;
     bonus NUMERIC;
 BEGIN
-    -- Получение текущей зарплаты сотрудника
+    
     SELECT salary INTO current_salary FROM employees WHERE id = emp_id;
     
-    -- Вычисление бонуса
+    
     CALL calculate_bonus(current_salary, bonus);
     
-    -- Обновление зарплаты с бонусом
+    
     UPDATE employees SET salary = current_salary + bonus WHERE id = emp_id;
 END;
 $$;
@@ -116,17 +116,17 @@ DECLARE
     processed_str VARCHAR;
     calculation_result NUMERIC;
 BEGIN
-    -- Вложенный блок для обработки строки
+    
     BEGIN
         processed_str := CONCAT(str1, '_processed');
     END;
 
-    -- Вложенный блок для числовых вычислений
+    
     BEGIN
         calculation_result := num1 * 1.5;
     END;
 
-    -- Итоговый результат
+    
     result := calculation_result + LENGTH(processed_str);
 END;
 $$;
